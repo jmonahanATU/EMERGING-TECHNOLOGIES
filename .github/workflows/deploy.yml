@@ -4,11 +4,14 @@ on:
   push:
     branches:
       - main
+      #The workflow is triggered whenever there is a push event on the 'main' branch.
+      #This ensures that the latest changes in the main branch are deployed to GitHub Pages.
 
 permissions:
   contents: read
   pages: write
   id-token: write
+  #Required permissions for deployment.
 
 jobs:
   deploy:
@@ -16,23 +19,36 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
+    #Set up GitHub Pages environment.
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+         #Gets the repository code.
         
       - name: Setup Pages
         uses: actions/configure-pages@v4
+        #Set up the GitHub Pages environment.
+        #This action configures the runner to support GitHub Pages deployment.
         
       - name: Prepare deployment
         run: |
           mkdir _site
           cp -r eliza/* _site/
+        #Prepare the files for deployment.
+        #Create a new directory called '_site'.
+        #Copy all files and folders from the 'eliza' directory into the '_site' directory.
+        #This step organizes the content to be deployed in a format suitable for GitHub Pages.
+        #I had trouble using '.' and './eliza', It was finding the README. This so this worked instead.
         
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: '_site'
+        #Upload the '_site' directory as an artifact.
+        #Artifacts are temporary storage areas used to transfer the site files
+        #to the next action in the workflow for deployment to GitHub Pages.
           
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+         #Deploy the uploaded artifact to GitHub Pages.
